@@ -5,6 +5,8 @@ import socket
 import time
 from datetime import datetime
 from pymongo import MongoClient
+import clean_data_code
+import graphlab as gl
 
 mcl = MongoClient()
 mdb = mcl['events']
@@ -14,8 +16,20 @@ app = Flask(__name__)
 PORT = 5353
 REGISTER_URL = "http://10.5.81.89:5000/register"
 
-data = []
-timestamps= []
+
+def predict_fraud(json_input):
+    """Add fraud probability to json input"""
+    df = clean_data_code.mongo_to_df(json_input)
+    abt = clean_data_code.transform_df(df)
+    model = gl.load_model('../models/btc_priceless_v1.gl')
+    sf = gl.SFrame(abt)
+    pred = model.predict(sf)
+    prob = model.predict(sf, output_type='probability')
+
+    ev = json_input.copy()
+    ev['_pred'] = str(pred)
+    ev['_prob'] = str(prob)
+    return ev
 
 
 @app.route('/score', methods=['POST'])
@@ -23,8 +37,8 @@ def score():
 
     this_event = request.json
     #event_time = time.time()
-
-    events_in.insert_one(this_event)
+    ev = predict_fraud(this_event)
+    events_in.insert_one(ev)
 
     return ""
 
