@@ -17,7 +17,6 @@ def mongo_to_df(incoming_json):
     nj = json_normalize(incoming_json)
     df = pd.DataFrame(nj)
     return df
-
 def transform_df(df):
     """Applies transformations to raw data to create ABT"""
     clean_payout = lambda x: int(str(x) == 'ACH' or str(x) == '1')
@@ -58,11 +57,13 @@ def transform_df(df):
     text_vec = df['description'].apply(lambda x: BeautifulSoup(x, 'lxml').get_text())
     text_vec1 = zip(text_vec, df['name'], df['org_name'], df['payee_name'], df['org_desc'])
     text_vec1 = [ ''.join(ln) for ln in text_vec1]
-
-
+    count_char = pd.Series(text_vec1)
+    df["Numberof!"]    = count_char.apply(lambda x: x.count("!"))
+    df["NumberofCaps"] = count_char.apply(lambda x: sum(1 for c in x if c.isupper()))
+    
     tfidf_vec = joblib.load(tfidf_file)
 
-    r       = tfidf_vec.fit_transform(text_vec1)
+    r       = tfidf_vec.transform(text_vec1)
     columns = tfidf_vec.get_feature_names()
     columns = [ 'tfidf_'+c for c in columns]
     temp    = pd.DataFrame(r.toarray(),columns=columns)
