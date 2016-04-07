@@ -43,20 +43,6 @@ def score():
     return ""
 
 
-@app.route('/check')
-def check():
-    line1 = "Number of data points: {0}".format(len(data))
-    if data and timestamps:
-        dt = datetime.fromtimestamp(timestamps[-1])
-        data_time = dt.strftime('%Y-%m-%d %H:%M:%S')
-        line2 = "Latest datapoint received at: {0}".format(data_time)
-        line3 = data[-1]
-        output = "{0}\n\n{1}\n\n{2}".format(line1, line2, line3)
-    else:
-        output = line1
-    return output, 200, {'Content-Type': 'text/css; charset=utf-8'}
-
-
 def register_subscription(ip, port):
     registration_data = {'ip': ip, 'port': port}
     requests.post(REGISTER_URL, data=registration_data)

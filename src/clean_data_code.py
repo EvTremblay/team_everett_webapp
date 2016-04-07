@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from bs4 import BeautifulSoup
 from pandas.io.json import json_normalize
 
+
 tfidf_file = ("../models/tfidf_vectorizer.pkl")
 #df = pd.read_json('data/train_new.json')
 
@@ -149,7 +150,10 @@ def transform_df(df):
     df['ticket_types_cost_max'] = df['ticket_types'].map(cost_max)
     df['ticket_types_quantity_sum'] = df['ticket_types'].map(quantity_sum)
     df['ticket_types_total_value'] = df['ticket_types'].map(total_value)
-    df['ticket_types_cost_mean'] = df['ticket_types_total_value'] / df['ticket_types_quantity_sum']
+    try:
+        df['ticket_types_cost_mean'] = df['ticket_types_total_value'] / df['ticket_types_quantity_sum']
+    except:
+        df['ticket_types_cost_mean'] = 0
     df['has_header'] = df['has_header'].astype(int)
     df['has_header'] = df['has_header'].fillna(0)
 
