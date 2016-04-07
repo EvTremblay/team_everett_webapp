@@ -15,12 +15,12 @@ Open Webpage using the command:
 ### Model:
   GraphLab's Boosted Tree Classifier
   
-#Creators:
+## Creators:
   - Mossy
   - [Everett Tremblay](https://github.com/evtremblay/)
   - [Miles Erickson](https://github.com/mileserickson/)
   - [Crystal Humphries](https://github.com/CrystalHumphries/)
   
-# Copyright and License
+## Copyright and License
 Copyright 2016 Team Everett DS Strategies, LLC. Code released under awesome license.
   
